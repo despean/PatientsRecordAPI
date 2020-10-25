@@ -32,8 +32,54 @@ router.post('/addPatient', function(req, res, next) {
     var patient = new Patient(req.body);
     patient.patientID  = uuidv4();
     patient.mostRecentVisit = Date.now();
-    patient.save()
-    res.send(patient.toJSON());
+    patient.save().then(function(data){
+        res.send(patient.toJSON());
+    }).catch(function(ex){
+        res.send(ex)
+    })
+
+});
+
+router.post('/addPatientRecord/:id', function(req, res, next) {
+    // {
+    //     dataType: {type:String, required:true},
+    //     dateRecorded : {type:Date, required:true},
+    //     readings : {type:String, required:true},
+    //     patientID: {type:String, required:true}
+    // }
+    // record data field
+    var record = new Records(req.body);
+    Patient.find({patientID:req.params.id}, function(err, docs){
+        if(docs.length >= 1){
+            record.dateRecorded = Date.now();
+            record.patientID = req.params.id;
+            record.save().then(function(doc){
+                res.send(doc.toJSON())
+            }).catch(function(ex){
+                res.send(ex)
+            })
+        }else{
+            res.send({'error': 'Patient not found make sure patient ID is correct'})
+        }
+    })
+});
+
+router.get('/getPatientRecord/:id', function(req, res, next) {
+    Records.find({patientID:req.params.id}, function(err, docs){
+        res.send(docs);
+    })
+});
+
+router.get('/getPatientRecord/:id/:datatype', function(req, res, next) {
+    Records.find({patientID:req.params.id, dataType:req.params.datatype}, function(err, docs){
+        res.send(docs);
+    })
+});
+
+router.get('/getAllPatientRecord/', function(req, res, next) {
+    Records.find({}, function(err, docs){
+        res.send(docs);
+    })
 });
 
 
