@@ -4,22 +4,22 @@ var Patient = require( '../models/PatientModel');
 var Records = require( '../models/PatientRecordModel');
 const { v4: uuidv4 } = require('uuid');
 
-/* GET home page. */
-router.get('/getPatients', function(req, res, next) {
+
+router.get('/', function(req, res, next) {
     Patient.find({}, function(err, docs){
         res.send(docs);
     })
 
 });
 
-router.get('/getPatients/:id', function(req, res, next) {
+router.get('/:id', function(req, res, next) {
     Patient.find({patientID:req.params.id}, function(err, docs){
         res.send(docs);
     })
 
 });
 
-router.post('/addPatient', function(req, res, next) {
+router.post('/', function(req, res, next) {
     // {
     //     "firstName": "Kenyi",
     //     "lastName": "Despean",
@@ -40,7 +40,7 @@ router.post('/addPatient', function(req, res, next) {
 
 });
 
-router.post('/addPatientRecord/:id', function(req, res, next) {
+router.post('/records/:id', function(req, res, next) {
     // {
     //     dataType: {type:String, required:true},
     //     dateRecorded : {type:Date, required:true},
@@ -64,19 +64,20 @@ router.post('/addPatientRecord/:id', function(req, res, next) {
     })
 });
 
-router.get('/getPatientRecord/:id', function(req, res, next) {
+router.get('/records/:id', function(req, res, next) {
     Records.find({patientID:req.params.id}, function(err, docs){
         res.send(docs);
     })
 });
 
-router.get('/getPatientRecord/:id/:datatype', function(req, res, next) {
-    Records.find({patientID:req.params.id, dataType:req.params.datatype}, function(err, docs){
+router.get('/records/:id/:datatype', function(req, res, next) {
+    var datatype  = req.params.datatype.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+    Records.find({patientID:req.params.id, dataType:datatype}, function(err, docs){
         res.send(docs);
     })
 });
 
-router.get('/getAllPatientRecord/', function(req, res, next) {
+router.get('/records/', function(req, res, next) {
     Records.find({}, function(err, docs){
         res.send(docs);
     })
