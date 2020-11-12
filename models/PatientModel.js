@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/Patient', {useNewUrlParser: true});
+mongoose.connect('mongodb+srv://admin:fYudGuww0m2wxCG0@cluster0.ihevv.mongodb.net?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const patientSchema = new mongoose.Schema({
